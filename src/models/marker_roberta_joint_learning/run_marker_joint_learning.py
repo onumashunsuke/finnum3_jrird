@@ -339,9 +339,9 @@ def main():
         padding = False
 
     model.config.claim_label2id = {l: i for i, l in enumerate(claim_label_list)}
-    model.config.claim_id2label = {id: label for label, id in config.claim_label2id.items()}
+    model.config.claim_id2label = {id: label for label, id in model.config.claim_label2id.items()}
     model.config.category_label2id = {l: i for i, l in enumerate(category_label_list)}
-    model.config.category_id2label = {id: label for label, id in config.category_label2id.items()}
+    model.config.category_id2label = {id: label for label, id in model.config.category_label2id.items()}
 
     if data_args.max_seq_length > tokenizer.model_max_length:
         logger.warning(
@@ -356,8 +356,8 @@ def main():
             (examples[sentence1_key],) if sentence2_key is None else (examples[sentence1_key], examples[sentence2_key])
         )
         result = tokenizer(*args, padding=padding, max_length=max_seq_length, truncation=True)
-        result["label1"] = [(config.claim_label2id[l] if l != -1 else -1) for l in examples["label1"]]
-        result["label2"] = [(config.category_label2id[l] if l != -1 else -1) for l in examples["label2"]]
+        result["label1"] = [(model.config.claim_label2id[l] if l != -1 else -1) for l in examples["label1"]]
+        result["label2"] = [(model.config.category_label2id[l] if l != -1 else -1) for l in examples["label2"]]
         return result
 
     with training_args.main_process_first(desc="dataset map pre-processing"):
